@@ -4,11 +4,16 @@ const socketIO = require("socket.io");
 const cors = require("cors");
 app.use(cors());
 
+const port = process.env.PORT || "8080";
 const server = express()
   .use(app)
-  .listen(process.env.PORT, () => console.log(`Listening Socket on ${Port}`));
+  .listen(port, () => console.log(`Listening Socket on ${port}`));
 
 const io = socketIO(server);
+
+app.get("/", function (req, res) {
+  res.send("socket world");
+});
 
 io.on("connection", async (socket) => {
   socket.on("user_joined", (userInfo, room) => {
