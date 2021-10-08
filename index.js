@@ -8,7 +8,7 @@ const cors = require("cors");
 app.use(cors());
 
 app.get("/", function (req, res) {
-  res.send("socket world");
+  res.send("Socket service is run");
 });
 
 io.on("connection", async (socket) => {
