@@ -4,10 +4,9 @@ const socketIO = require("socket.io");
 const cors = require("cors");
 app.use(cors());
 
-const Port = process.env.PORT || "8080";
 const server = express()
   .use(app)
-  .listen(Port, () => console.log(`Listening Socket on ${Port}`));
+  .listen(process.env.PORT, () => console.log(`Listening Socket on ${Port}`));
 
 const io = socketIO(server);
 
