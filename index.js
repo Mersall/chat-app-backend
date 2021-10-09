@@ -11,16 +11,30 @@ app.get("/", function (req, res) {
   res.send("Socket service is run");
 });
 
-io.on("connection", async (socket) => {
-  socket.on("user_joined", (userInfo, room) => {
-    socket.broadcast.to(room).emit("user_joined", userInfo);
+var connectedUsers = {};
+io.on("connection", (socket) => {
+  /*Register connected user*/
+  socket.on("register", function (username) {
+    socket.username = username;
+    connectedUsers[username] = socket;
   });
-  socket.on("join_room", (roomId, cb) => {
-    socket.join(roomId);
-    cb(`joined ${roomId} Room`);
-  });
-  socket.on("send_message", (msg, room) => {
-    socket.broadcast.to(room).emit("received_message", msg, room);
+
+  /*Private chat*/
+  socket.on("private_chat", function (data) {
+    const to = data.to,
+      message = data.message,
+      date = data.date;
+
+    if (connectedUsers.hasOwnProperty(to)) {
+      connectedUsers[to].emit("private_chat", {
+        //The sender's username
+        username: socket.username,
+
+        //Message sent to receiver
+        message: message,
+        date: date,
+      });
+    }
   });
 });
 
